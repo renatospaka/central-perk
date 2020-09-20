@@ -13,6 +13,17 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: "gatsby-source-graphql",
+      options: {
+        // This type will contain remote schema Query type
+        typeName: "PointOfInterest",
+        // This is the field under which it's accessible
+        fieldName: "poi",
+        // URL to query from
+        url: "http://localhost:3003",
+      },
+    },
+    {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/content/blog`,

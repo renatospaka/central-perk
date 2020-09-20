@@ -15,11 +15,16 @@ const typeDefs = /* GraphQL */ `
     name: String
     location: Point
     type: String
-    node_osm_id: ID!
-    tags: [Tag] @cypher(statement: """ 
-    MATCH (this)-->(t:OSMTags)
-    UNWIND keys(t) AS key
-    RETURN {key: key, value: t[key]} AS tag
+    node_osm_id: Int
+    tags: [String] @cypher(statement: """ 
+    MATCH (this)-[:TAGS]->(t:OSMTags)
+    RETURN keys(t)
+    """)
+    routeToPOI(poi: Int!): [Step] @cypher(statement: """
+    MATCH (other:PointOfInterest {node_osm_id: $poi})
+    MATCH p=shortestPath( (this)-[:ROUTE*..200]-(other) )
+    UNWIND nodes(p) AS n
+    RETURN {latitude: n.location.latitude, longitude: n.location.longitude} AS route
     """)
   }
 `;
