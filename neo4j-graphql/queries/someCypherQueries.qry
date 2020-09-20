@@ -1,0 +1,12 @@
+//get the route from The Pond to Dancing Crane Cafe
+MATCH (p1:PointOfInterest {name: "The Pond"})
+MATCH (p2:PointOfInterest {name: "Dancing Crane Cafe"})
+MATCH p=shortestPath((p1)-[:ROUTE*..200]-(p2))
+RETURN p
+
+//GPS coordinates to the route above
+MATCH (p1:PointOfInterest {name: "The Pond"})
+MATCH (p2:PointOfInterest {name: "Dancing Crane Cafe"})
+MATCH p=shortestPath((p1)-[:ROUTE*..200]-(p2))
+UNWIND nodes(p) AS n
+RETURN {latitude: n.location.latitude, longitude: n.location.longitude}
