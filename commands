@@ -1,0 +1,19 @@
+## para iniciar o webserver
+cd website
+gatsby develop
+
+# para abrir o site
+http://localhost:8000
+
+# para abrir o servidor apollo
+http://localhost:8000/___graphql
+
+
+###############################################
+
+## para iniciar o servidor apollo neo4j
+cd neo4j-graphql
+npm start
+
+# para abrir o servidor apollo
+http://localhost:3003

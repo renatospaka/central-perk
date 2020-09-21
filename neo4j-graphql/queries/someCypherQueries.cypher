@@ -10,3 +10,7 @@ MATCH (p2:PointOfInterest {name: "Dancing Crane Cafe"})
 MATCH p=shortestPath((p1)-[:ROUTE*..200]-(p2))
 UNWIND nodes(p) AS n
 RETURN {latitude: n.location.latitude, longitude: n.location.longitude}
+
+//change the node_osm_id to String to match the definitions in the GraphQL, otherwise it doesn'r work
+MATCH (p:PointOfInterest)
+SET p.node_osm_id = toString(p.node_osm_id)
