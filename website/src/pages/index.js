@@ -7,8 +7,8 @@ import SEO from "../components/seo"
 import { rhythm } from "../utils/typography"
 
 const BlogIndex = ({ data, location }) => {
-  const siteTitle = data.site.siteMetadata?.title || `Title`
-  const posts = data.allMarkdownRemark.nodes
+  const siteTitle = data.site.siteMetadata?.title
+  const posts = data.poi.PointOfInterest
 
   if (posts.length === 0) {
     return (
@@ -24,11 +24,11 @@ const BlogIndex = ({ data, location }) => {
     <Layout location={location} title={siteTitle}>
       <SEO title="All posts" />
       <Bio />
-      {posts.map((post) => {
-        const title = post.frontmatter.title || post.fields.slug
+      {posts.map((node) => {
+        const title = node.name 
         return (
           <article
-            key={post.fields.slug}
+            key={node.node_osm_id}
             itemScope
             itemType="http://schema.org/Article"
           >
@@ -40,22 +40,14 @@ const BlogIndex = ({ data, location }) => {
               >
                 <Link
                   style={{ boxShadow: `none` }}
-                  to={post.fields.slug}
+                  to={node.node_osm_id}
                   itemProp="url"
                 >
                   <span itemProp="headline">{title}</span>
                 </Link>
               </h3>
-              <small>{post.frontmatter.date}</small>
             </header>
-            <section>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: post.frontmatter.description || post.excerpt,
-                }}
-                itemProp="description"
-              />
-            </section>
+
           </article>
         )
       })}
@@ -66,22 +58,20 @@ const BlogIndex = ({ data, location }) => {
 export default BlogIndex
 
 export const pageQuery = graphql`
-  query {
+  {
     site {
       siteMetadata {
         title
       }
     }
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
-      nodes {
-        excerpt
-        fields {
-          slug
-        }
-        frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          title
-          description
+    poi {
+      PointOfInterest {
+        node_osm_id
+        name
+        type
+        location {
+          latitude
+          longitude
         }
       }
     }
