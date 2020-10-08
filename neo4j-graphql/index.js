@@ -35,9 +35,22 @@ const typeDefs = /* GraphQL */ `
     """)
     routeToPOI(poi: ID!): [Step] @cypher(statement: """
     MATCH (other:PointOfInterest {node_osm_id: $poi})
-    MATCH p=shortestPath( (this)-[:ROUTE*..200]-(other) )
-    UNWIND nodes(p) AS n
-    RETURN {latitude: n.location.latitude, longitude: n.location.longitude} AS route
+    call gds.alpha.shortestPath.stream({
+      nodeProjection: 'OSMNode',
+        relationshipProjection: {
+          ROUTE: {
+              type: 'ROUTE',
+                properties: 'distance',
+                orientation: 'UNDIRECTED'
+            }
+          },
+          startNode: this,
+          endNode: other,
+        relationshipWeightProperty: 'distance'
+    })
+    YIELD nodeId, cost
+    WITH gds.util.asNode(nodeId) AS node
+    RETURN {latitude: node.location.latitude, longitude: node.location.longitude} AS route
     """)
   }
 `;
